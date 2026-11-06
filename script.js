@@ -1,102 +1,90 @@
-function calcularMedia () {
-    let nome = document.getElementById("nome").value;
-    let materia = document.getElementById("materia").value;
-    let nota1 = Number(document.getElementById("nota1").value);
-    let nota2 = Number(document.getElementById("nota2").value);
-    let nota3 = Number(document.getElementById("nota3").value);
-    let nota4 = Number(document.getElementById("nota4").value);
-    // ADICIONADO A NOTA 4
+// Função que calcula a média e mostra o resultado
+function calcularMedia() {
 
-    // Printar valores no console (terminal)
-    console.log("Nome:", nome);
-    console.log("Materia:", materia);
-    console.log("Nota1:", nota1);
-    console.log("Nota2:", nota2);
-    console.log("Nota3:", nota3);
-    console.log("Nota4:", nota4);
-    // ADICIONADO A NOTA 4
+  // Captura os valores digitados
 
+  let nome = document.getElementById("nome").value.trim();
+  let nota1 = document.getElementById("nota1").value;
+  let nota2 = document.getElementById("nota2").value;
+  let nota3 = document.getElementById("nota3").value;
 
-    // calculando a média
-    let media = (nota1 + nota2 + nota3 + nota4) / 4;
-    // ADICIONADO A NOTA 4 AO CÁLCULO
+  // Conferir: algum campo vazio?
 
-    console.log("Média calculada:", media);
+  if (nome === "" || nota1 === "" || nota2 === "" || nota3 === "") {
+    document.getElementById("resultado").innerText =
+      "Preencha o nome e as três notas!";
+    document.getElementById("resultado").className = "erro";
+    return;
+  }
 
-    // Condicionais para verificar o resultado média com base para saber se reside aprovado ou reprovado
-    let situacao;
-    if (media >= 6) {
-        situacao = "Aprovado ✅";
-    } else {
-        situacao = "Reprovado ❌"; // ADICIONADO EMOJIS
-    }
+  // Conferir: o nome tem algum número?
 
-    console.log("Situação:", situacao);
+  if (/[0-9]/.test(nome)) {
+    document.getElementById("resultado").innerText =
+      "O nome não pode ter números!";
+    document.getElementById("resultado").className = "erro";
+    return;
+  }
 
-    let mediaArredondada = media.toFixed(1);
+  // Conferir: alguma nota fora de 0 a 10?
 
-    // Montando o resultado
-    let texto = nome + ", na matéria: " + materia + " sua média é: " + mediaArredondada + " (" + situacao + ")";
-    // O sinal + aqui não é soma matemática - quando está entre textos, ele "cola" as partes. Se nome="Maria", mediaArredondada="8.0" e situacao="Aprovado", o resultado é: Maria - Média: 8.0 (Aprovado0)
+  if (nota1 < 0 || nota1 > 10 ||
+    nota2 < 0 || nota2 > 10 ||
+    nota3 < 0 || nota3 > 10) {
 
-    // colocando o resultado na tela
-    document.getElementById("resultado").innerText = texto;
+    document.getElementById("resultado").innerText =
+      "Os números digitados são maiores que 10!";
+    document.getElementById("resultado").className = "erro";
+    return;
 
-    // Pop-up para média maior que 9
-    if (media > 9) {
-        document.getElementById("popup-texto").innerText =
-            nome + ", sua média foi " + mediaArredondada + "! Excelente desempenho!";
-        document.getElementById("popup").classList.add("ativo");
-    }
+  }
+
+  // Agora sim, transformar as notas em número
+
+  nota1 = Number(nota1);
+  nota2 = Number(nota2);
+  nota3 = Number(nota3);
+
+  console.log("Nome:", nome);
+  console.log("Nota 1:", nota1);
+  console.log("Nota 2:", nota2);
+  console.log("Nota 3:", nota3);
+
+  // Calcula a média das 3 notas
+  let media = (nota1 + nota2 + nota3) / 3;
+
+  console.log("Média calculada:", media);
+
+  // Define a situação do aluno usando if/else
+  let situacao;
+
+  if (media >= 7) {
+    situacao = "Aprovado";
+    document.getElementById("resultado").className = "aprovado";
+  }
+  else if (media >= 5 && media < 7) {
+    situacao = "Recuperação";
+    document.getElementById("resultado").className = "recuperacao";
+  }
+  else {
+    situacao = "Reprovado";
+    document.getElementById("resultado").className = "reprovado";
+  }
+
+  console.log("Situação:", situacao);
+
+  // Passo 1: arredonda a média para 1 casa decimal
+  let mediaArredondada = media.toFixed(1);
+
+  // Passo 2: monta o texto que vai aparecer na tela
+  let texto = nome + " — Média: " + mediaArredondada
+    + " (" + situacao + ")";
+
+  // Passo 3: mostra o texto na tela
+  document.getElementById("resultado").innerText = texto;
+
 }
 
-// Escutando o clique
-document.getElementById("btn-calcular").addEventListener("click", calcularMedia);
-
-// Fechando o pop-up
-function fecharPopup() {
-    document.getElementById("popup").classList.remove("ativo");
-}
-
-document.getElementById("btn-fechar").addEventListener("click", fecharPopup);
-
-// Fecha também ao clicar fora da caixa (no fundo escuro)
-document.getElementById("popup").addEventListener("click", function (evento) {
-    if (evento.target === this) {
-        fecharPopup();
-    }
-});
-
-// function -> cria um bloco de código para realizar uma tarefa
-// calcularMedia -> o nome que demos a essa função
-// { } as chaves delimitam o bloco de código que pertence à função
-
-// ================================================================
-
-// let -> cria uma variável 
-// document -> representa a página exibida no navegador
-// .getElementById("nome") -> procura o elemento com o id="nome"
-// .value -> pega o valor que está dentro do campo
-
-// Number -> informando que vamos trabalhar com valores numericos
-
-// ================================================================
-
-// console.log() -> mostra uma mensagem no console do navegador
-// "Nome:" -> texto fixo: aparece exatamente como foi escrito
-// nome -> o valor guardado na variável (ex.: Maria)
-
-// ================================================================
-
-// toFixed(1) -> trabalha com 1 casa decimal: 7.666... vira 7.7
-// mediaArredondada -> nova variável, só para a apresentação do valor
-
-// ================================================================
-
-// getElementById("resultado") -> procura o elemento com id="resultado" - a div vazia do HTML
-// .innerText = texto -> coloca dentro dele o conteúdo da variável texto
-
-// ================================================================
-
-// addEventListener("click", ...) -> "fique de olho no clique nesse elemento"
-// calcularMedia -> a função que deve rodar quand o clique acontecer
+// Quando o botão for clicado, chama a função acima
+document.getElementById("btn-calcular")
+  .addEventListener("click", calcularMedia);
